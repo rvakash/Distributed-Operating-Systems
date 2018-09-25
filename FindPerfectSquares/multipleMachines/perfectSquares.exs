@@ -6,6 +6,11 @@
 #####################################################
 defmodule PerfectSquares do
     def scheduler(n, k, use_multiple_machines) do
+        IO.puts "Finished Execution in : #{elem(:timer.tc(PerfectSquares, :scheduler1, [n, k , use_multiple_machines]), 0)} us"
+        # IO.puts inspect :timer.tc(PerfectSquares, :scheduler1, [n, k , use_multiple_machines])        
+    end
+
+    def scheduler1(n, k, use_multiple_machines) do
         actorNum = n
         if use_multiple_machines == 1 do
             create_workers(n, k, actorNum, 20000, 0, use_multiple_machines)

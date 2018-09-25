@@ -2,6 +2,10 @@
 
 **TODO: Add description**
 
+## Instructions to run the project
+1) $mix escript.build
+2) $escript proj2 100 full gossip
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
