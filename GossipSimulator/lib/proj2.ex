@@ -28,56 +28,32 @@ defmodule Proj2 do
             "full"          ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighborsFull(nodeId, numOfNodes)
-                    if algorithm == "gossip" do
-                        
-                    else
-
-                    end
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
                 end
             "3DGrid"        ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighbors3DGrid(nodeId, numOfNodes)
-                    if algorithm == "gossip" do
-                        
-                    else
-
-                    end
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
                 end
             "2DGrid"        ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighbors2DGrid(nodeId, numOfNodes)
-                    if algorithm == "gossip" do
-                        
-                    else
-
-                    end
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
                 end
             "3DTorus"       ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighbors3DTorus(nodeId, numOfNodes)
-                    if algorithm == "gossip" do
-                        
-                    else
-
-                    end
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
                 end
             "line"          ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighborsLine(nodeId, numOfNodes)
-                    if algorithm == "gossip" do
-                        
-                    else
-
-                    end
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
                 end
             "imperfectLine" ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighborsImperfectLine(nodeId, numOfNodes)
-                    if algorithm == "gossip" do
-                        
-                    else
-
-                    end
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
                 end
         end
 
