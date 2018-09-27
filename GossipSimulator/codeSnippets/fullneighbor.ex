@@ -1,7 +1,7 @@
-defmodule FullNeighbor do
+defmodule GetNeighbor do
 
   #Getting the line neighbor
-  def getLineNeighbor(nodeId,numOfNodes) do
+  def PerfectLine(nodeId,numOfNodes) do
     range =
       cond do
         nodeId == 1 -> [2]
@@ -12,7 +12,7 @@ defmodule FullNeighbor do
   end
 
   #Getiing the full neighbors
-  def getNeighborsFull(nodeId,numOfNodes) do
+  def Full(nodeId,numOfNodes) do
     range=1..numOfNodes
     range
     |> Enum.filter(fn(value) -> value != nodeId end)
@@ -20,7 +20,7 @@ defmodule FullNeighbor do
     # IO.inspect Neighboringlist
   end
   #Getting the imperfect Line Neighbors
-  def getImperfectLineNeighbor(nodeId,numOfNodes) do
+  def ImperfectLine(nodeId,numOfNodes) do
     range =
       cond do
         nodeId == 1 -> [2,:rand.uniform(numOfNodes-2)+2]
