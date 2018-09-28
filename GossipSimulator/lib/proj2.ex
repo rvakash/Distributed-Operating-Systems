@@ -11,9 +11,9 @@ defmodule Proj2 do
     def main(args) do
         # Receive total number of nodes, topology, algorithm, triggerNodes(optional), threshold(optional) from user.
         # Read README.md for more details
-        numOfNodes = String.to_integer(Enum.at(args,0))
-        topology = Enum.at(args,1)
-        algorithm = Enum.at(args,2)
+        numOfNodes = String.to_integer(Enum.at(args, 0))
+        topology = Enum.at(args, 1)
+        algorithm = Enum.at(args, 2)
         # triggerNodes = 
         #     if Enum.at(args, 3) != nil do
         #         String.to_integer(Enum.at(args, 3))
@@ -32,7 +32,11 @@ defmodule Proj2 do
             "full"          ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighborsFull(nodeId, numOfNodes)
-                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
+                    # IO.inspect neighborList
+                    nodeId_atom = nodeId |> Integer.to_string() |> String.to_atom()
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId_atom)
+                    GenServer.cast(nodeId_atom, {:message, "This is Elixir Gossip Simulator"})
+                    # IO.puts "In main, nodeId = #{nodeId}"
                 end
             # "3DGrid"        ->
             #     Enum.each 1..numOfNodes, fn nodeId ->
@@ -62,7 +66,6 @@ defmodule Proj2 do
             #     end
         end
 
-        GenServer.cast(1, {:message, "This is Elixir Gossip Simulator"})
     end
 
     def getNeighborsFull(nodeId,numOfNodes) do
