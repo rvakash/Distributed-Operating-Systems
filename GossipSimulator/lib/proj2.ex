@@ -8,12 +8,12 @@ defmodule Proj2 do
 # 1) $mix escript.build
 # 2) $escript proj2 100 full gossip
 
-    def main(args) do
+    def main do
         # Receive total number of nodes, topology, algorithm, triggerNodes(optional), threshold(optional) from user.
         # Read README.md for more details
-        numOfNodes = String.to_integer(Enum.at(args, 0))
-        topology = Enum.at(args, 1)
-        algorithm = Enum.at(args, 2)
+        numOfNodes = 2#String.to_integer(Enum.at(args, 0))
+        topology = "full"#Enum.at(args, 1)
+        algorithm = "gossip"#Enum.at(args, 2)
         # triggerNodes = 
         #     if Enum.at(args, 3) != nil do
         #         String.to_integer(Enum.at(args, 3))
@@ -65,7 +65,7 @@ defmodule Proj2 do
             #     end
         end
         GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
-                    
+        Process.sleep(100)
     end
 
     def getNeighborsFull(nodeId,numOfNodes) do

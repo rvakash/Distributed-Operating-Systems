@@ -1,5 +1,5 @@
 defmodule Taskstart do
-    def main(args) do
+    def main do
 #        numOfNodes = String.to_integer(Enum.at(args, 0))
 #        topology = Enum.at(args, 1)
 #        algorithm = Enum.at(args, 2)
@@ -10,7 +10,7 @@ defmodule Taskstart do
             neighborList = getNeighborsFull(nodeId, numOfNodes)
             inspect neighborList
             nodeId_atom = intToAtom(nodeId)
-            GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId_atom)
+            GenServer.start(Actor, [nodeId, neighborList, algorithm], name: nodeId_atom)
         end
         GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
 
