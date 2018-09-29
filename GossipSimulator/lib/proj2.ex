@@ -32,10 +32,9 @@ defmodule Proj2 do
             "full"          ->
                 Enum.each 1..numOfNodes, fn nodeId ->
                     neighborList = getNeighborsFull(nodeId, numOfNodes)
-                    # IO.inspect neighborList
-                    nodeId_atom = nodeId |> Integer.to_string() |> String.to_atom()
+                    inspect neighborList
+                    nodeId_atom = intToAtom(nodeId)
                     GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId_atom)
-                    GenServer.cast(nodeId_atom, {:message, "This is Elixir Gossip Simulator"})
                     # IO.puts "In main, nodeId = #{nodeId}"
                 end
             # "3DGrid"        ->
@@ -65,7 +64,8 @@ defmodule Proj2 do
             #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
             #     end
         end
-
+        GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
+                    
     end
 
     def getNeighborsFull(nodeId,numOfNodes) do
@@ -74,8 +74,11 @@ defmodule Proj2 do
         |> Enum.filter(fn(value) -> value != nodeId end)
         |> Enum.map(fn(filtered_value) -> filtered_value * 1 end)
         # IO.inspect Neighboringlist
-      end
+    end
     
+    def intToAtom(integer) do
+        integer |> Integer.to_string() |> String.to_atom()
+    end
 end
 
 
