@@ -1,26 +1,29 @@
 #####################################################
 # Course: COP 5615, Distributed Operating System Principles, University of Florida
-# Autors: Akash R Vasishta, Aditya Bhanje 
-# Description: Use Actor Model(Genserver) in Elixir to 
+# Autors: Akash R Vasishta, Aditya Bhanje
+# Description: Use Actor Model(Genserver) in Elixir to
 #####################################################
 defmodule Proj2 do
 # Instructions to run the project
 # 1) $mix escript.build
 # 2) $escript proj2 100 full gossip
 
-    def main(args) do
+    def main do
         # Receive total number of nodes, topology, algorithm, triggerNodes(optional), threshold(optional) from user.
         # Read README.md for more details
-        numOfNodes = String.to_integer(Enum.at(args, 0))
-        topology = Enum.at(args, 1)
-        algorithm = Enum.at(args, 2)
-        # triggerNodes = 
+        numOfNodes = String.to_integer(Enum.at(System.argv, 0))
+        topology = Enum.at(System.argv, 1)
+        algorithm = Enum.at(System.argv, 2)
+        IO.inspect numOfNodes
+        IO.inspect topology
+        IO.inspect algorithm
+        # triggerNodes =
         #     if Enum.at(args, 3) != nil do
         #         String.to_integer(Enum.at(args, 3))
         #     else
         #         1
         #     end
-        # threshold = 
+        # threshold =
         #     if Enum.at(args, 4) != nil do
         #         String.to_integer(Enum.at(args, 4))
         #     else
@@ -65,7 +68,8 @@ defmodule Proj2 do
             #     end
         end
         GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
-                    
+        Process.sleep(100)
+
     end
 
     def getNeighborsFull(nodeId,numOfNodes) do
@@ -75,7 +79,7 @@ defmodule Proj2 do
         |> Enum.map(fn(filtered_value) -> filtered_value * 1 end)
         # IO.inspect Neighboringlist
     end
-    
+
     def intToAtom(integer) do
         integer |> Integer.to_string() |> String.to_atom()
     end
