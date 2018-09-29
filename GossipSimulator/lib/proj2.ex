@@ -11,12 +11,6 @@ defmodule Proj2 do
     def main do
         # Receive total number of nodes, topology, algorithm, triggerNodes(optional), threshold(optional) from user.
         # Read README.md for more details
-<<<<<<< HEAD
-        numOfNodes = 2#String.to_integer(Enum.at(args, 0))
-        topology = "full"#Enum.at(args, 1)
-        algorithm = "gossip"#Enum.at(args, 2)
-        # triggerNodes = 
-=======
         numOfNodes = String.to_integer(Enum.at(System.argv, 0))
         topology = Enum.at(System.argv, 1)
         algorithm = Enum.at(System.argv, 2)
@@ -24,7 +18,6 @@ defmodule Proj2 do
         IO.inspect topology
         IO.inspect algorithm
         # triggerNodes =
->>>>>>> 4ac2bfa4977074b850a982937d2e3059698bd078
         #     if Enum.at(args, 3) != nil do
         #         String.to_integer(Enum.at(args, 3))
         #     else
@@ -75,11 +68,7 @@ defmodule Proj2 do
             #     end
         end
         GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
-        Process.sleep(100)
-<<<<<<< HEAD
-=======
-
->>>>>>> 4ac2bfa4977074b850a982937d2e3059698bd078
+        Process.sleep(10000)
     end
 
     def getNeighborsFull(nodeId,numOfNodes) do

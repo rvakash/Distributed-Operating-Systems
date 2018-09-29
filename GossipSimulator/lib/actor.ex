@@ -12,7 +12,7 @@ defmodule Actor do
 
     def handle_cast({:message, rumour}, state) do
         {nodeId, neighborList, algorithm, recCount, gossipingTask} = state
-        IO.puts "nodeId - #{nodeId} recCount - #{recCount} handle_cast: #{rumour} gossipingTask - #{gossipingTask}"
+        IO.puts "handle_cast : nodeId - #{nodeId} recCount - #{recCount} rumour: #{rumour}"# gossipingTask - #{gossipingTask}"
         # IO.puts "#{is_list({2,3})}"
         # IO.inspect is_list('Hello')
         # IO.inspect is_list(elem(state, 1))
@@ -21,29 +21,25 @@ defmodule Actor do
         # IO.inspect(head)
         # Map.put(state, "recCount", recCount + 1)
 
-        IO.puts "1here #{rumour}"
+        # IO.puts "1here #{rumour}"
 
-        gossipingTask = Task.start(fn -> startGossiping(nL, rumour) end) 
-        IO.puts "Now again - #{rumour}"
-            # if gossipingTask == 0 do
-            #     IO.puts "here"
-            #     Task.start fn -> startGossiping(nL, "#{rumour}") end
-            # else
-            #     1
-            # end
-        # gossipingTask = 
-            # if recCount > 9 do
-            #     Task.shutdown(gossipingTask, :brutal_kill)
-            #     # 1
-            # # else
-            # #     1
-            # end
+        gossipingTask = 
+            if gossipingTask == 0 and recCount == 1 do
+                Task.start(fn -> startGossiping(nL, rumour) end) 
+            end
+        gossipingTask = 
+            if recCount == 10 and gossipingTask != 0 do
+                Task.shutdown(gossipingTask, :brutal_kill)
+                0
+            end
         {:noreply, {nodeId, neighborList, algorithm, recCount + 1, gossipingTask}}
     end
 
     def startGossiping(nL, rumour) do
-        IO.puts "In startGossiping "
+        # IO.puts "In startGossiping "
         #{Enum.random(nL)}"
-        # GenServer.cast(Proj2.intToAtom(Enum.random(nL)), {:message, rumour})
+        GenServer.cast(Proj2.intToAtom(Enum.random(nL)), {:message, rumour})
+        # Process.sleep(100)
+        startGossiping(nL, rumour)
     end
 end

@@ -7,11 +7,7 @@ defmodule Proj2.MixFile do
       version: "0.1.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
-<<<<<<< HEAD
-    #   escript: [main_module: Proj2],
-=======
       # escript: [main_module: Proj2],
->>>>>>> 4ac2bfa4977074b850a982937d2e3059698bd078
       deps: deps()
     ]
   end
