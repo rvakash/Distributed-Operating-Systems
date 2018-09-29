@@ -20,7 +20,9 @@ defmodule Actor do
         # IO.inspect head
         # IO.inspect(head)
         # Map.put(state, "recCount", recCount + 1)
-        IO.puts "here #{rumour}"
+
+        IO.puts "1here #{rumour}"
+
         gossipingTask = Task.start(fn -> startGossiping(nL, rumour) end) 
         IO.puts "Now again - #{rumour}"
             # if gossipingTask == 0 do

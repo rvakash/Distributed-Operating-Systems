@@ -1,5 +1,6 @@
 defmodule Actor do    
     use GenServer
+    require Logger
 
     def init([nodeId, neighborList, algorithm]) do
         IO.inspect "#{nodeId}"
@@ -12,13 +13,13 @@ defmodule Actor do
         {nodeId, neighborList, algorithm, recCount, gossipingTask} = state
         IO.puts "nodeId - #{nodeId} recCount - #{recCount} handle_cast: #{rumour} gossipingTask - #{gossipingTask}"
         nL = elem(state, 1)
-        IO.inspect rumour
-        gossipingTask = Task.start(fn -> startGossiping(Enum.random(nL), rumour) end) 
+        IO.inspect nL
+        gossipingTask = Task.start(fn -> startGossiping end) 
         IO.puts "Now again - #{rumour}"
         {:noreply, {nodeId, neighborList, algorithm, recCount + 1, gossipingTask}}
     end
 
-    def startGossiping(nL, rumour) do
+    def startGossiping do
         IO.puts "In startGossiping "
         #{Enum.random(nL)}"
         # GenServer.cast(Proj2.intToAtom(Enum.random(nL)), {:message, rumour})

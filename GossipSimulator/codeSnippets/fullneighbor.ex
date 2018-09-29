@@ -96,8 +96,8 @@ defmodule GetNeighbor do
     map2D(numOfNodes)
     l5 = getrandom2D(nodeId,numOfNodes)
     IO.inspect l5
-    # l6=Enum.filter(l5,fn y -> y != nodeId end)
-    # IO.inspect l6
+    l6=Enum.filter(l5,fn y -> y != nodeId end)
+    IO.inspect l6
     inspect :ets.delete(:nodes)
   end
 
