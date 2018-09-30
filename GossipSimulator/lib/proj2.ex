@@ -37,7 +37,7 @@ defmodule Proj2 do
                     neighborList = getNeighborsFull(nodeId, numOfNodes)
                     inspect neighborList
                     nodeId_atom = intToAtom(nodeId)
-                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId_atom)
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
                     # IO.puts "In main, nodeId = #{nodeId}"
                 end
             # "3DGrid"        ->
@@ -67,8 +67,21 @@ defmodule Proj2 do
             #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
             #     end
         end
+        start_time = System.system_time(:millisecond)
         GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
-        Process.sleep(10000)
+        exitWorkers(numOfNodes)
+        time_diff = System.system_time(:millisecond) - start_time
+        IO.puts "Time taken to achieve convergence: #{time_diff} milliseconds"
+        # Process.sleep(100000)
+    end
+    
+    def exitWorkers(0), do: nil
+
+    def exitWorkers(numOfWorkers) do
+        receive do
+            exitValue -> inspect(exitValue)
+            exitWorkers(numOfWorkers - 1)
+        end
     end
 
     def getNeighborsFull(nodeId,numOfNodes) do
