@@ -92,15 +92,83 @@ defmodule GetNeighbor do
 
   end
 
-  def random2D(nodeId,numOfNodes) do
-    map2D(numOfNodes)
-    l5 = getrandom2D(nodeId,numOfNodes)
-    IO.inspect l5
-    l6=Enum.filter(l5,fn y -> y != nodeId end)
-    IO.inspect l6
-    inspect :ets.delete(:nodes)
-  end
+    def random2D(nodeId,numOfNodes) do
+        map2D(numOfNodes)
+        l5 = getrandom2D(nodeId,numOfNodes)
+        IO.inspect l5
+        l6=Enum.filter(l5,fn y -> y != nodeId end)
+        IO.inspect l6
+        inspect :ets.delete(:nodes)
+    end
 
+    def grid3D(nodeId, numOfNodes) do
+        rowCount = round(GetRoot.cube(3, numOfNodes))
+        IO.puts "#{rowCount}x#{rowCount}x#{rowCount} grid"
+        faceNum = getFaceNum3D(nodeId, rowCount, numOfNodes, 0, 1)#nodeId, rowCount, numOfNodes, startFaceNum, faceNum
+        IO.puts "nodeId = #{nodeId} faceNum = #{faceNum}"
+        i = nodeId
+        case faceNum do
+            1 ->
+                neighboursList =  cond do
+                    i == 1 -> [i+1,i+rowCount, i+:math.pow(rowCount, 2) |> round]
+                    i == rowCount -> [i-1,i+rowCount, i+:math.pow(rowCount, 2) |> round]
+                    i == numOfNodes - rowCount + 1 -> [i+1,i-rowCount, i+:math.pow(rowCount, 2) |> round]
+                    i == numOfNodes -> [i-1,i-rowCount, i+:math.pow(rowCount, 2) |> round]
+                    i < rowCount -> [i-1,i+1,i+rowCount, i+:math.pow(rowCount, 2) |> round]
+                    i > numOfNodes - rowCount + 1 and i < numOfNodes -> [i-1,i+1,i-rowCount, i+:math.pow(rowCount, 2) |> round]
+                    rem(i-1,rowCount) == 0 -> [i+1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round]
+                    rem(i,rowCount) == 0 -> [i-1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round]
+                    true -> [i-1,i+1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round]
+                end
+                IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
 
+            rowCount ->
+                neighboursList =  cond do
+                    i == 1 -> [i+1,i+rowCount, i-:math.pow(rowCount, 2) |> round]
+                    i == rowCount -> [i-1,i+rowCount, i-:math.pow(rowCount, 2) |> round]
+                    i == numOfNodes - rowCount + 1 -> [i+1,i-rowCount, i-:math.pow(rowCount, 2) |> round]
+                    i == numOfNodes -> [i-1,i-rowCount, i-:math.pow(rowCount, 2) |> round]
+                    i < rowCount -> [i-1,i+1,i+rowCount, i-:math.pow(rowCount, 2) |> round]
+                    i > numOfNodes - rowCount + 1 and i < numOfNodes -> [i-1,i+1,i-rowCount, i-:math.pow(rowCount, 2) |> round]
+                    rem(i-1,rowCount) == 0 -> [i+1,i-rowCount,i+rowCount, i-:math.pow(rowCount, 2) |> round]
+                    rem(i,rowCount) == 0 -> [i-1,i-rowCount,i+rowCount, i-:math.pow(rowCount, 2) |> round]
+                    true -> [i-1,i+1,i-rowCount,i+rowCount, i-:math.pow(rowCount, 2) |> round]
+                end
+                IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
 
+            _ ->
+                neighboursList =  cond do
+                    i == 1 -> [i+1,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    i == rowCount -> [i-1,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    i == numOfNodes - rowCount + 1 -> [i+1,i-rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    i == numOfNodes -> [i-1,i-rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    i < rowCount -> [i-1,i+1,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    i > numOfNodes - rowCount + 1 and i < numOfNodes -> [i-1,i+1,i-rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    rem(i-1,rowCount) == 0 -> [i+1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    rem(i,rowCount) == 0 -> [i-1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                    true -> [i-1,i+1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
+                end
+                IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
+        end
+
+    end
+
+    def getFaceNum3D(nodeId, rowCount, numOfNodes, startFaceNum, faceNum) do
+        if startFaceNum < nodeId and nodeId <= startFaceNum + :math.pow(rowCount, 2) |> round do
+            faceNum
+        else
+            getFaceNum3D(nodeId, rowCount, numOfNodes, startFaceNum + :math.pow(rowCount, 2) |> round, faceNum + 1)
+        end
+    end
+    
+end
+
+defmodule GetRoot do
+    def cube(n, x, precision \\ 1.0e-5) do
+        f = fn(prev) -> ((n - 1) * prev + x / :math.pow(prev, (n-1))) / n end
+        fixed_point(f, x, precision, f.(x))
+    end
+   
+    defp fixed_point(_, guess, tolerance, next) when abs(guess - next) < tolerance, do: next
+    defp fixed_point(f, _, tolerance, next), do: fixed_point(f, next, tolerance, f.(next))
 end
