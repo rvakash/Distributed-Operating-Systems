@@ -31,7 +31,7 @@ defmodule Proj2 do
         #     end
         #used this numOfNodes1 everywhere for now
         numOfNodes1=
-        if topology=="Torus" do
+        if topology=="torus" do
             trunc(:math.pow(:math.ceil(:math.sqrt(numOfNodes)), 2))
         else
             numOfNodes
@@ -47,17 +47,17 @@ defmodule Proj2 do
                     GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
                     # IO.puts "In main, nodeId = #{nodeId}"
                 end
-            # "3DGrid"        ->
+            # "3dgrid"        ->
             #     Enum.each 1..numOfNodes, fn nodeId ->
             #         neighborList = getNeighbors3DGrid(nodeId, numOfNodes)
             #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
             #     end
-            # "2DGrid"        ->
+            # "2dgrid"        ->
             #     Enum.each 1..numOfNodes, fn nodeId ->
             #         neighborList = getNeighbors2DGrid(nodeId, numOfNodes)
             #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
             #     end
-            "Torus"       ->
+            "torus"       ->
                 Enum.each 1..numOfNodes1, fn nodeId ->
                     # generate3DTorus(numOfNodes);
 
@@ -73,18 +73,26 @@ defmodule Proj2 do
                     nodeId_atom = intToAtom(nodeId)
                     GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
                 end
-            # "imperfectLine" ->
-            #     Enum.each 1..numOfNodes, fn nodeId ->
-            #         neighborList = getNeighborsImperfectLine(nodeId, numOfNodes)
-            #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
-            #     end
+            "impLine" ->
+                Enum.each 1..numOfNodes1, fn nodeId ->
+                    neighborList = GetNeighbor.imperfectLine(nodeId, numOfNodes1)
+                    inspect neighborList
+                    nodeId_atom = intToAtom(nodeId)
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
+                end
         end
         start_time = System.system_time(:millisecond)
-        GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
+        if algorithm == "gossip" do
+            GenServer.cast(intToAtom(100), {:message, "This is Elixir Gossip Simulator"})            
+        else
+            IO.puts "pushsum"
+            GenServer.cast(intToAtom(100), {:message_pushsum, 2, 1})#nodeId, w
+        end
         exitWorkers(numOfNodes1)
+        # Process.sleep(10000)
+        # IO.puts "Came back in main"
         time_diff = System.system_time(:millisecond) - start_time
         IO.puts "Time taken to achieve convergence: #{time_diff} milliseconds"
-        # Process.sleep(100000)
     end
 
     def exitWorkers(0), do: nil
