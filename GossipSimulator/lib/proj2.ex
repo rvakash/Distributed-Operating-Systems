@@ -32,9 +32,9 @@ defmodule Proj2 do
         #used this numOfNodes1 everywhere for now
         numOfNodes1=
         if topology=="Torus" do
-          trunc(:math.pow(:math.ceil(:math.sqrt(numOfNodes)), 2))
+            trunc(:math.pow(:math.ceil(:math.sqrt(numOfNodes)), 2))
         else
-          numOfNodes
+            numOfNodes
         end
         # numOfNodes = if String.contains?(topology, "2d"), do: round(:math.pow(round(:math.sqrt(numOfNodes)), 2)), else: numOfNodes
 
