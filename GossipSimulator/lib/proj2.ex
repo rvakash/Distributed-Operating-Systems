@@ -5,8 +5,8 @@
 #####################################################
 defmodule Proj2 do
 # Instructions to run the project
-# 1) $mix escript.build
-# 2) $escript proj2 100 full gossip
+# 1) $mix compile
+# 2) $mix run -e Proj2.main 100 full gossip
 
     def main do
         # Receive total number of nodes, topology, algorithm, triggerNodes(optional), threshold(optional) from user.
