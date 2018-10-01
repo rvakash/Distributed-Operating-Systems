@@ -1,4 +1,4 @@
-defmodule Actor do    
+defmodule Actor do
     use GenServer
     require Logger
 
@@ -31,7 +31,7 @@ defmodule Actor do
 
         {:ok, gossipingTask} = #Task.start(fn -> startGossiping(nL, rumour) end)
             if recCount == 1 do
-                Task.start(fn -> startGossiping(nL, rumour, nodeId, 0) end) 
+                Task.start(fn -> startGossiping(nL, rumour, nodeId, 0) end)
                 # spawn(Gossip, :startGossiping, [nodeId, nL, rumour])
             else
                 {:ok, gossipingTask}
@@ -57,7 +57,7 @@ defmodule Actor do
         else
             1
         end
-        
+
         {:noreply, {nodeId, neighborList, algorithm, recCount + 1, gossipingTask, isActive, parentPID}}
     end
 
@@ -73,23 +73,24 @@ defmodule Actor do
         # if rem(count, 15) == 0 do
         #     IO.inspect nL, label: "nodeId = #{nodeId} Neighbor List = "
         # end
-        x = Enum.random(nL)
-        neighborId = Proj2.intToAtom(x)
-        case GenServer.call(neighborId, :is_active) do
-            1 -> 
-                GenServer.cast(neighborId, {:message, rumour})
-                #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
-                # Process.sleep(100)
-                startGossiping(nL, rumour, nodeId, count)
+        # IO.inspect nL
+        # x = Enum.random(nL)
+        # neighborId = Proj2.intToAtom(x)
+        # case GenServer.call(neighborId, :is_active) do
+        #     1 ->
+        #         GenServer.cast(neighborId, {:message, rumour})
+        #         #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
+        #         # Process.sleep(100)
+        #         startGossiping(nL, rumour, nodeId, count)
 
-            0 -> 
-                nL1 = nL -- [x]
-                # IO.inspect nL1, label: "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH  ="
-                startGossiping(nL1, rumour, nodeId, count)
-        end
+        #     0 ->
+        #         nL1 = nL -- [x]
+        #         # IO.inspect nL1, label: "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH  ="
+        #         startGossiping(nL1, rumour, nodeId, count)
+        # end
 
-        # GenServer.cast(Proj2.intToAtom(Enum.random(nL)), {:message, rumour})
-        # # Process.sleep(10)
-        # startGossiping(nL, rumour, nodeId, count)
+        GenServer.cast(Proj2.intToAtom(Enum.random(nL)), {:message, rumour})
+        # Process.sleep(10)
+        startGossiping(nL, rumour, nodeId, count)
     end
 end

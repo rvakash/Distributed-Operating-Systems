@@ -29,12 +29,19 @@ defmodule Proj2 do
         #     else
         #         0
         #     end
-        numOfNodes = if String.contains?(topology, "2d"), do: round(:math.pow(round(:math.sqrt(numOfNodes)), 2)), else: numOfNodes
+        #used this numOfNodes1 everywhere for now
+        numOfNodes1=
+        if topology=="Torus" do
+          trunc(:math.pow(:math.ceil(:math.sqrt(numOfNodes)), 2))
+        else
+          numOfNodes
+        end
+        # numOfNodes = if String.contains?(topology, "2d"), do: round(:math.pow(round(:math.sqrt(numOfNodes)), 2)), else: numOfNodes
 
         case topology do
             "full"          ->
-                Enum.each 1..numOfNodes, fn nodeId ->
-                    neighborList = getNeighborsFull(nodeId, numOfNodes)
+                Enum.each 1..numOfNodes1, fn nodeId ->
+                    neighborList = GetNeighbor.full(nodeId, numOfNodes1)
                     inspect neighborList
                     nodeId_atom = intToAtom(nodeId)
                     GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
@@ -50,17 +57,22 @@ defmodule Proj2 do
             #         neighborList = getNeighbors2DGrid(nodeId, numOfNodes)
             #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
             #     end
-            # "3DTorus"       ->
-            #     Enum.each 1..numOfNodes, fn nodeId ->
-            #         # generate3DTorus(numOfNodes);
-            #         neighborList = getNeighbors3DTorus(nodeId, numOfNodes)
-            #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
-            #     end
-            # "line"          ->
-            #     Enum.each 1..numOfNodes, fn nodeId ->
-            #         neighborList = getNeighborsLine(nodeId, numOfNodes)
-            #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
-            #     end
+            "Torus"       ->
+                Enum.each 1..numOfNodes1, fn nodeId ->
+                    # generate3DTorus(numOfNodes);
+
+                    neighborList = GetNeighbor.torus(nodeId, numOfNodes1)
+                    inspect neighborList
+                    nodeId_atom = intToAtom(nodeId)
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm,self], name: nodeId_atom)
+                end
+            "line"          ->
+                Enum.each 1..numOfNodes1, fn nodeId ->
+                    neighborList = GetNeighbor.perfectLine(nodeId, numOfNodes1)
+                    inspect neighborList
+                    nodeId_atom = intToAtom(nodeId)
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
+                end
             # "imperfectLine" ->
             #     Enum.each 1..numOfNodes, fn nodeId ->
             #         neighborList = getNeighborsImperfectLine(nodeId, numOfNodes)
@@ -69,12 +81,12 @@ defmodule Proj2 do
         end
         start_time = System.system_time(:millisecond)
         GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
-        exitWorkers(numOfNodes)
+        exitWorkers(numOfNodes1)
         time_diff = System.system_time(:millisecond) - start_time
         IO.puts "Time taken to achieve convergence: #{time_diff} milliseconds"
         # Process.sleep(100000)
     end
-    
+
     def exitWorkers(0), do: nil
 
     def exitWorkers(numOfWorkers) do
@@ -84,13 +96,13 @@ defmodule Proj2 do
         end
     end
 
-    def getNeighborsFull(nodeId,numOfNodes) do
-        range = 1..numOfNodes
-        range
-        |> Enum.filter(fn(value) -> value != nodeId end)
-        |> Enum.map(fn(filtered_value) -> filtered_value * 1 end)
-        # IO.inspect Neighboringlist
-    end
+    # def getNeighborsFull(nodeId,numOfNodes) do
+    #     range = 1..numOfNodes
+    #     range
+    #     |> Enum.filter(fn(value) -> value != nodeId end)
+    #     |> Enum.map(fn(filtered_value) -> filtered_value * 1 end)
+    #     # IO.inspect Neighboringlist
+    # end
 
     def intToAtom(integer) do
         integer |> Integer.to_string() |> String.to_atom()
