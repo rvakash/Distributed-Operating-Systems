@@ -123,7 +123,6 @@ defmodule Actor do
                 # IO.inspect gossipingTask, label: "here"
                 {1, gossipingTask}
             else
-<<<<<<< HEAD
                 isActivegossipingTask2 =
                 if isActive != 0 do
                     Process.exit(gossipingTask, :kill)
@@ -134,16 +133,6 @@ defmodule Actor do
                     {0, gossipingTask}      
                 end
                 isActivegossipingTask2
-=======
-                # if Process.alive?gossipingTask do
-                #     # IO.puts "ALIVE"
-                # else
-                #     # IO.puts "Task Dead nodeId = #{nodeId}"
-                # end
-                Process.exit(gossipingTask, :kill)
-                {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count
-                gossipingTask
->>>>>>> 18195e0174aa43a27161345825cdae1bd144838b
             end
             # IO.inspect gossipingTask, label: "here1"
             # {1, gossipingTask}
@@ -160,11 +149,7 @@ defmodule Actor do
 
         if nL != [] do
             x = Enum.random(nL)
-<<<<<<< HEAD
             {newX, count2} = 
-=======
-            newX =
->>>>>>> 18195e0174aa43a27161345825cdae1bd144838b
             if x == prevNum do
 # sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor
 #and bombard it multiple times without giving the neighbor a chance to execute. This will cause a problem in line if not handled.
@@ -195,13 +180,8 @@ defmodule Actor do
                     # IO.puts "I am still transmitting!!. nodeId = #{nodeId}"
                     GenServer.cast(neighborId, {:message_pushsum, sends, sendw})
                     #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
-<<<<<<< HEAD
                     startGossipingPushSum(nL,  sends, sendw, nodeId, newX, count2)
     
-=======
-                    startGossipingPushSum(nL,  sends, sendw, nodeId, newX, count)
-
->>>>>>> 18195e0174aa43a27161345825cdae1bd144838b
                 0 ->
                     # Remove the Dead nodes from neighbor list
                     nL1 = nL -- [newX]
@@ -244,7 +224,7 @@ defmodule Actor do
             if x == prevNum do
 # sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor
 #and bombard it multiple times without giving the neighbor a chance to execute. This will cause a problem in line if not handled.
-                Process.sleep(2)
+                Process.sleep(3)
                 Enum.random(nL)
                 # count1 = count + 1
             else
