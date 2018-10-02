@@ -87,17 +87,10 @@ defmodule Proj2 do
         end
         start_time = System.system_time(:millisecond)
         if algorithm == "gossip" do
-<<<<<<< HEAD
             GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})            
         else
             IO.puts "pushsum"
             GenServer.cast(intToAtom(2), {:message_pushsum, 0, 0})#nodeId, w
-=======
-            GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
-        else
-            IO.puts "pushsum"
-            GenServer.cast(intToAtom(2), {:message_pushsum, 2, 1})#nodeId, w
->>>>>>> 5bd79de1bdfb96e228718cabd8646087db21c990
         end
         exitWorkers(numOfNodes1)
         # Process.sleep(10000)

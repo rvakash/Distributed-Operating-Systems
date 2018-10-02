@@ -87,7 +87,7 @@ defmodule Actor do
         {nodeId, neighborList, algorithm, recCount, gossipingTask, isActive, parentPID, olds1, oldw1, olds2, oldw2 } = state
 
         nL = elem(state, 1)
-        IO.puts "I AM ACTIVE!!! nodeId = #{nodeId} recCount = #{recCount} isActive = #{isActive}"
+        # IO.puts "I AM ACTIVE!!! nodeId = #{nodeId} recCount = #{recCount} isActive = #{isActive}"
         updateds = olds1 + news
         updatedw = oldw1 + neww
         saves = updateds/2
@@ -113,26 +113,30 @@ defmodule Actor do
                 # end
             end
             send parentPID, 0
-            IO.puts "DEADDEADDEADDEADDEADDEADDEADDEADDEADDEADDEAD. nodeId = #{nodeId}"
+            # IO.puts "DEADDEADDEADDEADDEADDEADDEADDEADDEADDEADDEAD. nodeId = #{nodeId}"
             # send(self, :kill_me_pls)
             {0, gossipingTask}
         else
-            isActivegossipingTask =
+            isActivegossipingTask1 =
             if recCount == 1 do
                 {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count
                 # IO.inspect gossipingTask, label: "here"
                 {1, gossipingTask}
             else
+                isActivegossipingTask2 =
                 if isActive != 0 do
                     Process.exit(gossipingTask, :kill)
                     {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count    
                     {1, gossipingTask}
                 else
+                    # IO.puts "nodeId = #{nodeId} isActive = #{isActive}"
                     {0, gossipingTask}      
                 end
+                isActivegossipingTask2
             end
             # IO.inspect gossipingTask, label: "here1"
             # {1, gossipingTask}
+            isActivegossipingTask1
         end
         # IO.inspect elem(isActivegossipingTask, 1), label: "nodeId = #{nodeId}  gossipingTask = #{gossipingTask}"
         # IO.inspect elem(isActivegossipingTask, 0), label: "nodeId = #{nodeId}  isActive = #{isActive}"
@@ -145,23 +149,38 @@ defmodule Actor do
 
         if nL != [] do
             x = Enum.random(nL)
-            newX = 
+            {newX, count2} = 
             if x == prevNum do
 # sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor 
 #and bombard it multiple times without giving the neighbor a chance to execute. This will cause a problem in line if not handled.
                 Process.sleep(3)
-                Enum.random(nL)
+                if count+1 > 3 do
+                    count1 = 0
+                    # choose other than x from nL
+                    list = List.delete(nL, x)
+                    l1 = 
+                    if list == [] do
+                        x
+                    else
+                        Enum.at(list, 0)
+                    end
+                    {l1, count1}
+                else
+                    count1=count+1
+                    {Enum.random(nL), count1}
+                end
+
             else
-                x
+                {x, count}
             end
             neighborId = Proj2.intToAtom(newX)
             case GenServer.call(neighborId, :is_active) do
                 1 ->
-                    IO.inspect nL, label: "I AM ACTIVE!!! nodeId = #{nodeId} and I am choosing neighbor = #{newX} from nL = "
+                    # IO.inspect nL, label: "Start Gossiping!!! nodeId = #{nodeId} and I am choosing neighbor = #{newX} from nL = "
                     # IO.puts "I am still transmitting!!. nodeId = #{nodeId}"
                     GenServer.cast(neighborId, {:message_pushsum, sends, sendw})
                     #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
-                    startGossipingPushSum(nL,  sends, sendw, nodeId, newX, count)
+                    startGossipingPushSum(nL,  sends, sendw, nodeId, newX, count2)
     
                 0 ->
                     # Remove the Dead nodes from neighbor list
@@ -205,8 +224,9 @@ defmodule Actor do
             if x == prevNum do
 # sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor 
 #and bombard it multiple times without giving the neighbor a chance to execute. This will cause a problem in line if not handled.
-                Process.sleep(3)
+                Process.sleep(2)
                 Enum.random(nL)
+                # count1 = count + 1
             else
                 x
             end
