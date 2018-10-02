@@ -83,16 +83,19 @@ defmodule Proj2 do
         end
         start_time = System.system_time(:millisecond)
         if algorithm == "gossip" do
-            GenServer.cast(intToAtom(100), {:message, "This is Elixir Gossip Simulator"})            
+            GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})            
         else
             IO.puts "pushsum"
-            GenServer.cast(intToAtom(100), {:message_pushsum, 2, 1})#nodeId, w
+            GenServer.cast(intToAtom(2), {:message_pushsum, 0, 0})#nodeId, w
         end
         exitWorkers(numOfNodes1)
         # Process.sleep(10000)
         # IO.puts "Came back in main"
         time_diff = System.system_time(:millisecond) - start_time
+        IO.puts "Finished Execution!"
+        IO.puts "////////////////////////////////////////////////////////////"
         IO.puts "Time taken to achieve convergence: #{time_diff} milliseconds"
+        IO.puts "////////////////////////////////////////////////////////////"
     end
 
     def exitWorkers(0), do: nil

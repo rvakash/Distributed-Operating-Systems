@@ -13,8 +13,8 @@ defmodule Actor do
 # s and w required only for pushsum
         olds1 = nodeId
         oldw1 = 1
-        olds2 = -1
-        oldw2 = -1
+        olds2 = 10000
+        oldw2 = -5
         {:ok, {nodeId, neighborList, algorithm, recCount, gossipingTask, isActive, parentPID, olds1, oldw1, olds2, oldw2}}#nodeId, neighborList, algorithm, receivedCount, s, w
     end
 
@@ -87,7 +87,7 @@ defmodule Actor do
         {nodeId, neighborList, algorithm, recCount, gossipingTask, isActive, parentPID, olds1, oldw1, olds2, oldw2 } = state
 
         nL = elem(state, 1)
-        IO.puts "I AM ACTIVE!!! nodeId = #{nodeId} recCount = #{recCount}"
+        IO.puts "I AM ACTIVE!!! nodeId = #{nodeId} recCount = #{recCount} isActive = #{isActive}"
         updateds = olds1 + news
         updatedw = oldw1 + neww
         saves = updateds/2
@@ -95,6 +95,7 @@ defmodule Actor do
         if rem(recCount, 10) == 0 do
             # IO.puts "I AM ACTIVE!!! nodeId = #{nodeId} recCount = #{recCount}"
         end
+
         isActivegossipingTask =
         if(isActive == 1 and abs(updateds/updatedw - olds1/oldw1) < :math.pow(10, -10) and abs(olds1/oldw1 - olds2/oldw2) < :math.pow(10, -10)) do
             # IO.inspect(gossipingTask)
@@ -116,23 +117,22 @@ defmodule Actor do
             # send(self, :kill_me_pls)
             {0, gossipingTask}
         else
-            gossipingTask =
+            isActivegossipingTask =
             if recCount == 1 do
                 {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count
                 # IO.inspect gossipingTask, label: "here"
-                gossipingTask
+                {1, gossipingTask}
             else
-                # if Process.alive?gossipingTask do
-                #     # IO.puts "ALIVE"
-                # else
-                #     # IO.puts "Task Dead nodeId = #{nodeId}"
-                # end
-                Process.exit(gossipingTask, :kill)
-                {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count    
-                gossipingTask
+                if isActive != 0 do
+                    Process.exit(gossipingTask, :kill)
+                    {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count    
+                    {1, gossipingTask}
+                else
+                    {0, gossipingTask}      
+                end
             end
             # IO.inspect gossipingTask, label: "here1"
-            {1, gossipingTask}
+            # {1, gossipingTask}
         end
         # IO.inspect elem(isActivegossipingTask, 1), label: "nodeId = #{nodeId}  gossipingTask = #{gossipingTask}"
         # IO.inspect elem(isActivegossipingTask, 0), label: "nodeId = #{nodeId}  isActive = #{isActive}"
@@ -141,7 +141,7 @@ defmodule Actor do
     end
 
     def startGossipingPushSum(nL, sends, sendw, nodeId, prevNum, count) do
-        IO.puts "in startGossiping. nodeId= #{nodeId} nL = #{nL} "
+        # IO.inspect nL, label: "in startGossiping. nodeId= #{nodeId} nL = "
 
         if nL != [] do
             x = Enum.random(nL)
@@ -157,7 +157,7 @@ defmodule Actor do
             neighborId = Proj2.intToAtom(newX)
             case GenServer.call(neighborId, :is_active) do
                 1 ->
-                    # IO.puts "I AM ACTIVE!!! nodeId = #{nodeId} and I am choosing neighbor = #{newX}"
+                    IO.inspect nL, label: "I AM ACTIVE!!! nodeId = #{nodeId} and I am choosing neighbor = #{newX} from nL = "
                     # IO.puts "I am still transmitting!!. nodeId = #{nodeId}"
                     GenServer.cast(neighborId, {:message_pushsum, sends, sendw})
                     #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
