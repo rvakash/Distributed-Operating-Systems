@@ -94,12 +94,12 @@ defmodule GetNeighbor do
   end
 
     def random2D(nodeId,numOfNodes) do
-        map2D(numOfNodes)
+        # map2D(numOfNodes)
         l5 = getrandom2D(nodeId,numOfNodes)
         IO.inspect l5
         l6=Enum.filter(l5,fn y -> y != nodeId end)
         IO.inspect l6
-        inspect :ets.delete(:nodes)
+        # inspect :ets.delete(:nodes)
     end
 
     def torus(nodeId,numOfNodes) do
@@ -121,9 +121,9 @@ defmodule GetNeighbor do
 
     def grid3D(nodeId, numOfNodes) do
       rowCount = round(GetRoot.cube(3, numOfNodes))
-      IO.puts "#{rowCount}x#{rowCount}x#{rowCount} grid"
+      # IO.puts "#{rowCount}x#{rowCount}x#{rowCount} grid"
       faceNum = getFaceNum3D(nodeId, rowCount, numOfNodes, 0, 1)#nodeId, rowCount, numOfNodes, startFaceNum, faceNum
-      IO.puts "nodeId = #{nodeId} faceNum = #{faceNum}"
+      # IO.puts "nodeId = #{nodeId} faceNum = #{faceNum}"
       i = nodeId
       cond do
           faceNum == 1 ->
@@ -138,7 +138,7 @@ defmodule GetNeighbor do
                   rem(i,rowCount) == 0 -> [i-1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round]
                   true -> [i-1,i+1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round]
               end
-              IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
+              # IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
 
           faceNum == rowCount ->
               neighboursList =  cond do
@@ -152,7 +152,7 @@ defmodule GetNeighbor do
                   rem(i,rowCount) == 0 -> [i-1,i-rowCount,i+rowCount, i-:math.pow(rowCount, 2) |> round]
                   true -> [i-1,i+1,i-rowCount,i+rowCount, i-:math.pow(rowCount, 2) |> round]
               end
-              IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
+              # IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
 
          faceNum > 1 and faceNum < rowCount ->
               neighboursList =  cond do
@@ -166,7 +166,7 @@ defmodule GetNeighbor do
                   rem(i,rowCount) == 0 -> [i-1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
                   true -> [i-1,i+1,i-rowCount,i+rowCount, i+:math.pow(rowCount, 2) |> round, i-:math.pow(rowCount, 2) |> round]
               end
-              IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
+              # IO.inspect neighboursList, label: "nodeId = #{nodeId}  neighborsList = "
       end
     end
 

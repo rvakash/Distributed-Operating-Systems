@@ -30,11 +30,10 @@ defmodule Proj2 do
         #         0
         #     end
         #used this numOfNodes1 everywhere for now
-        numOfNodes1=
-        if topology=="torus" do
-            trunc(:math.pow(:math.ceil(:math.sqrt(numOfNodes)), 2))
-        else
-            numOfNodes
+        numOfNodes1= cond do
+          topology=="torus" -> trunc(:math.pow(:math.ceil(:math.sqrt(numOfNodes)), 2))
+          topology == "3dgrid" -> trunc(:math.pow(round(GetRoot.cube(3, numOfNodes)),3))
+          true -> numOfNodes
         end
         # numOfNodes = if String.contains?(topology, "2d"), do: round(:math.pow(round(:math.sqrt(numOfNodes)), 2)), else: numOfNodes
 
@@ -47,16 +46,21 @@ defmodule Proj2 do
                     GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
                     # IO.puts "In main, nodeId = #{nodeId}"
                 end
-            # "3dgrid"        ->
-            #     Enum.each 1..numOfNodes, fn nodeId ->
-            #         neighborList = getNeighbors3DGrid(nodeId, numOfNodes)
-            #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
-            #     end
-            # "2dgrid"        ->
-            #     Enum.each 1..numOfNodes, fn nodeId ->
-            #         neighborList = getNeighbors2DGrid(nodeId, numOfNodes)
-            #         GenServer.start_link(Actor, [nodeId, neighborList, algorithm], name: nodeId)
-            #     end
+            "3dgrid"        ->
+                Enum.each 1..numOfNodes1, fn nodeId ->
+                    neighborList = GetNeighbor.grid3D(nodeId, numOfNodes1)
+                    inspect neighborList
+                    nodeId_atom = intToAtom(nodeId)
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm,self], name: nodeId_atom)
+                end
+            "2dgrid"        ->
+                GetNeighbor.map2D(numOfNodes)
+                Enum.each 1..numOfNodes1, fn nodeId ->
+                    neighborList = GetNeighbor.random2D(nodeId, numOfNodes1)
+                    inspect neighborList
+                    nodeId_atom = intToAtom(nodeId)
+                    GenServer.start_link(Actor, [nodeId, neighborList, algorithm, self], name: nodeId_atom)
+                end
             "torus"       ->
                 Enum.each 1..numOfNodes1, fn nodeId ->
                     # generate3DTorus(numOfNodes);
@@ -83,10 +87,10 @@ defmodule Proj2 do
         end
         start_time = System.system_time(:millisecond)
         if algorithm == "gossip" do
-            GenServer.cast(intToAtom(100), {:message, "This is Elixir Gossip Simulator"})            
+            GenServer.cast(intToAtom(2), {:message, "This is Elixir Gossip Simulator"})
         else
             IO.puts "pushsum"
-            GenServer.cast(intToAtom(100), {:message_pushsum, 2, 1})#nodeId, w
+            GenServer.cast(intToAtom(2), {:message_pushsum, 2, 1})#nodeId, w
         end
         exitWorkers(numOfNodes1)
         # Process.sleep(10000)
