@@ -54,7 +54,7 @@ defmodule Proj2 do
                     GenServer.start_link(Actor, [nodeId, neighborList, algorithm,self], name: nodeId_atom)
                 end
             "2dgrid"        ->
-                GetNeighbor.map2D(numOfNodes)
+                GetNeighbor.map2D(numOfNodes1)
                 Enum.each 1..numOfNodes1, fn nodeId ->
                     neighborList = GetNeighbor.random2D(nodeId, numOfNodes1)
                     inspect neighborList

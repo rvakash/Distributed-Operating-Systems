@@ -43,17 +43,22 @@ defmodule GetNeighbor do
     range=1..numOfNodes
     Enum.each range, fn value ->
       if value==1 or value==2 do
-        :ets.insert_new(:nodes, {Integer.to_string(value), nodegen(2)})
+        :ets.insert_new(:nodes, {Integer.to_string(value), nodegen(2,numOfNodes)})
       else
-        :ets.insert_new(:nodes, {Integer.to_string(value), nodegen(value)})
+        :ets.insert_new(:nodes, {Integer.to_string(value), nodegen(value,numOfNodes)})
       end
     end
   end
 
-  def nodegen(nodeId) do
+  def nodegen(nodeId,numOfNodes) do
     range1=1..nodeId-1
-    x=:rand.uniform()
-    y=:rand.uniform()
+    {x,y}= cond do
+    numOfNodes < 50 -> {:rand.uniform()/5,:rand.uniform()/5}
+    numOfNodes <= 100 -> {:rand.uniform()/3,:rand.uniform()/3}
+    numOfNodes <= 500 -> {:rand.uniform()/2,:rand.uniform()/2}
+    true -> {:rand.uniform(),:rand.uniform()}
+    end
+
     if !(is_list(range1)) do
       [x,y]
     else
@@ -63,7 +68,7 @@ defmodule GetNeighbor do
         x1=List.first(l2)
         y1=List.last(l2)
         cond do
-          x==x1 and y==y1 -> nodegen(nodeId)
+          x==x1 and y==y1 -> nodegen(nodeId,numOfNodes)
           true -> nil
         end
       end
@@ -96,9 +101,9 @@ defmodule GetNeighbor do
     def random2D(nodeId,numOfNodes) do
         # map2D(numOfNodes)
         l5 = getrandom2D(nodeId,numOfNodes)
-        IO.inspect l5
+        # IO.inspect l5
         l6=Enum.filter(l5,fn y -> y != nodeId end)
-        IO.inspect l6
+        # inspect l6
         # inspect :ets.delete(:nodes)
     end
 
