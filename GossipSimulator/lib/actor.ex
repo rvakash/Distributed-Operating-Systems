@@ -128,7 +128,7 @@ defmodule Actor do
                 #     # IO.puts "Task Dead nodeId = #{nodeId}"
                 # end
                 Process.exit(gossipingTask, :kill)
-                {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count    
+                {:ok, gossipingTask} = Task.start(fn -> startGossipingPushSum(nL, saves, savew, nodeId, 0, 0) end)#nL, rumour, nodeId, prevNum, count
                 gossipingTask
             end
             # IO.inspect gossipingTask, label: "here1"
@@ -145,9 +145,9 @@ defmodule Actor do
 
         if nL != [] do
             x = Enum.random(nL)
-            newX = 
+            newX =
             if x == prevNum do
-# sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor 
+# sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor
 #and bombard it multiple times without giving the neighbor a chance to execute. This will cause a problem in line if not handled.
                 Process.sleep(3)
                 Enum.random(nL)
@@ -162,7 +162,7 @@ defmodule Actor do
                     GenServer.cast(neighborId, {:message_pushsum, sends, sendw})
                     #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
                     startGossipingPushSum(nL,  sends, sendw, nodeId, newX, count)
-    
+
                 0 ->
                     # Remove the Dead nodes from neighbor list
                     nL1 = nL -- [newX]
@@ -175,7 +175,7 @@ defmodule Actor do
                         startGossipingPushSum(nL1, sends, sendw, nodeId, newX, count)
                     end
             end
-            # startGossiping(nL, rumour, nodeId, count)    
+            # startGossiping(nL, rumour, nodeId, count)
         end
 
         #Can improve convergence better if I make sure that 80% of the nodes are dead
@@ -201,9 +201,9 @@ defmodule Actor do
         # IO.inspect nL, label: "nodeId = #{nodeId} nL ="
         if nL != [] do
             x = Enum.random(nL)
-            newX = 
+            newX =
             if x == prevNum do
-# sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor 
+# sleep is required so that the erlangVM gets to schedule another process. Otherwise it may choose the same neighbor
 #and bombard it multiple times without giving the neighbor a chance to execute. This will cause a problem in line if not handled.
                 Process.sleep(3)
                 Enum.random(nL)
@@ -218,12 +218,13 @@ defmodule Actor do
                     GenServer.cast(neighborId, {:message, rumour})
                     #   ina_xy -> GenServer.cast(Master,{:droid_inactive, ina_xy})
                     startGossiping(nL, rumour, nodeId, newX, count)
-    
+
                 0 ->
                     # Remove the Dead nodes from neighbor list
                     nL1 = nL -- [newX]
                     # If your neighbor list is empty add yourself to the neighborlist to gossip yourself
                     if nL1 == [] do
+                        Process.sleep(1)
                         nL2 = nL1 ++ [nodeId]
                         startGossiping(nL2, rumour, nodeId, newX, count)
                     else
@@ -231,7 +232,7 @@ defmodule Actor do
                         startGossiping(nL1, rumour, nodeId, newX, count)
                     end
             end
-            # startGossiping(nL, rumour, nodeId, count)    
+            # startGossiping(nL, rumour, nodeId, count)
         end
 
         #Can improve convergence better if I make sure that 80% of the nodes are dead
@@ -251,5 +252,5 @@ defmodule Actor do
     def terminate(_, state) do
         IO.inspect "Look! I'm dead."
     end
-    
+
 end
