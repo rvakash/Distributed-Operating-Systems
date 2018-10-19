@@ -12,20 +12,28 @@ defmodule Proj3 do
         numOfRequests = String.to_integer(Enum.at(System.argv, 1))
         IO.inspect numOfNodes, label: "numOfNodes = "
         IO.inspect numOfRequests, label: "numOfRequests = "
+        m = 31
 
         # Network initialization or the Chord ring is formed here
-        Enum.each 1..numOfNodes, fn nodeNum ->
-            nodeWithOverFlowinHex = :crypto.hash(:sha, intToString(nodeNum)) |> String.slice(0..31) |> Base.encode16
+        nodesList = for nodeNum <- 1..numOfNodes do
+            nodeWithOverFlowinHex = :crypto.hash(:sha, intToString(nodeNum)) |> String.slice(0..m) |> Base.encode16
             {nodeWithOverFlowinInt, x} = Integer.parse(nodeWithOverFlowinHex, 16)
-            nodeId = rem(nodeWithOverFlowinInt, :math.pow(2,31) |> round)
-            # IO.inspect nodeId
-            keyWithOverFlowinHex = :crypto.hash(:sha, intToString(nodeNum+100)) |> String.slice(0..31) |> Base.encode16
-            {keyWithOverFlowinInt, x} = Integer.parse(keyWithOverFlowinHex, 16)
-            keyId = rem(keyWithOverFlowinInt, :math.pow(2,31) |> round)
-
+            nodeId = rem(nodeWithOverFlowinInt, :math.pow(2,m) |> round)
+            nodeId
         end
+        keysList = for nodeNum <- 1..numOfNodes do
+            keyWithOverFlowinHex = :crypto.hash(:sha, intToString(nodeNum+100)) |> String.slice(0..m) |> Base.encode16
+            {keyWithOverFlowinInt, x} = Integer.parse(keyWithOverFlowinHex, 16)
+            keyId = rem(keyWithOverFlowinInt, :math.pow(2,m) |> round)
+            keyId
+        end
+
+        nodesListSorted = :lists.sort(nodesList)
+        
     end
     def intToString(integer) do
         integer |> Integer.to_string()
     end
 end
+nodeWithOverFlowinHex = :crypto.hash(:sha, Integer.to_string(nodeNum)) |> String.slice(0..m) |> Base.encode16
+
