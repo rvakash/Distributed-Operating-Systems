@@ -29,24 +29,13 @@ defmodule Proj3 do
         end
 
         nodesListSorted = :lists.sort(nodesList)
-<<<<<<< HEAD
         range=0..numOfNodes-1
         for i <- range do
-          keys = Snippets.getKeys(elem(List.pop_at(nodesListSorted,i-1),0),elem(List.pop_at(nodesListSorted,i),0),keysList)#getKeys between the node and its previous node
+          keys = CodeSnippets.getKeys(elem(List.pop_at(nodesListSorted,i-1),0),elem(List.pop_at(nodesListSorted,i),0),keysList)#getKeys between the node and its previous node
           IO.inspect keys
-=======
-        
-        Enum.each nodesListSorted, fn nodeId ->
-            keys = codeSnippets.getKeys(previousId, nodeId, keysList)#getKeys between the node and its previous node
-            fingerTable = codeSnippets.getFingerTable(nodeId, nodesListSorted)
-            
->>>>>>> c0ad104eeda91f3f88df58ca5676ec259837aebc
         end
     end
     def intToString(integer) do
         integer |> Integer.to_string()
     end
 end
-# nodeWithOverFlowinHex = :crypto.hash(:sha, Integer.to_string(nodeNum)) |> String.slice(0..m) |> Base.encode16
-
-#codeSnippets.getKeys(elem(List.pop_at(nodesListSorted,i-1),0),elem(List.pop_at(nodesListSorted,i),0),keysList)#getKeys between the node and its previous node
