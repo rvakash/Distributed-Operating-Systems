@@ -15,6 +15,10 @@ defmodule Proj3 do
         m = 31
 
         # Network initialization or the Chord ring is formed here
+        # Apply hash function, convert the hash to m bits and 
+        # then do a modulo 2^m to wrap around the ring
+        # Converting to m bits just so the identifier space is not too huge and 
+        # the finger table is not too long. length(FT) = m
         nodesList = for nodeNum <- 1..numOfNodes do
             nodeWithOverFlowinHex = :crypto.hash(:sha, intToString(nodeNum)) |> String.slice(0..m) |> Base.encode16
             {nodeWithOverFlowinInt, x} = Integer.parse(nodeWithOverFlowinHex, 16)
@@ -31,10 +35,19 @@ defmodule Proj3 do
         nodesListSorted = :lists.sort(nodesList)
         range=0..numOfNodes-1
         for i <- range do
-          keys = CodeSnippets.getKeys(elem(List.pop_at(nodesListSorted,i-1),0),elem(List.pop_at(nodesListSorted,i),0),keysList)#getKeys between the node and its previous node
-          IO.inspect keys
+            # getKeys between the node and its previous node.
+            # keys = CodeSnippets.getKeys(previousId, nodeId, keysList)
+            # Sometimes when the program gets complex and its 5am in an all nighter you tend to write programs like below
+            # iex> List.pop_at([1, 2, 3], 0)
+            # {1, [2, 3]}
+            nodeId = elem(List.pop_at(nodesListSorted, i), 0)
+            prevNodeId = elem(List.pop_at(nodesListSorted, i-1), 0)
+            keys = CodeSnippets.getKeys(prevNodeId, nodeId, keysList)
+        #   IO.inspect keys
+            fingerTable = CodeSnippets.getFingerTable(nodeId, nodesListSorted, m)
         end
     end
+
     def intToString(integer) do
         integer |> Integer.to_string()
     end

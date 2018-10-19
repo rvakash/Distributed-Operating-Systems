@@ -8,7 +8,7 @@ defmodule CodeSnippets do
     end
 
     def successor(id, nodesListSorted) do
-
+        # successor = Enum.each(nodesListSorted, )
     end
 end
   def getKeys(prev,curr,keysList) do
