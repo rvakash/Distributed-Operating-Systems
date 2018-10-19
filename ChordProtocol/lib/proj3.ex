@@ -30,6 +30,10 @@ defmodule Proj3 do
 
         nodesListSorted = :lists.sort(nodesList)
         
+        Enum.each nodesListSorted, fn nodeId ->
+            keys = codeSnippets.getKeys(previousId, nodeId, keysList)#getKeys between the node and its previous node
+
+        end
     end
     def intToString(integer) do
         integer |> Integer.to_string()
