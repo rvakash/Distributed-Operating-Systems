@@ -32,7 +32,8 @@ defmodule Proj3 do
         
         Enum.each nodesListSorted, fn nodeId ->
             keys = codeSnippets.getKeys(previousId, nodeId, keysList)#getKeys between the node and its previous node
-
+            fingerTable = codeSnippets.getFingerTable(nodeId, nodesListSorted)
+            
         end
     end
     def intToString(integer) do
