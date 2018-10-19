@@ -29,14 +29,25 @@ defmodule Proj3 do
         end
 
         nodesListSorted = :lists.sort(nodesList)
+<<<<<<< HEAD
         
         Enum.each nodesListSorted, fn nodeId ->
             keys = CodeSnippets.getKeys(previousId, nodeId, keysList)#getKeys between the node and its previous node
             fingerTable = CodeSnippets.getFingerTable(nodeId, nodesListSorted, m)
 
+=======
+        range=0..numOfNodes-1
+        for i <- range do
+          keys = CodeSnippets.getKeys(elem(List.pop_at(nodesListSorted,i-1),0),elem(List.pop_at(nodesListSorted,i),0),keysList)#getKeys between the node and its previous node
+          IO.inspect keys
+>>>>>>> 77760ce5504fee24d1d973187436d9ea5b6f23a8
         end
     end
     def intToString(integer) do
         integer |> Integer.to_string()
     end
+<<<<<<< HEAD
 end
+=======
+end
+>>>>>>> 77760ce5504fee24d1d973187436d9ea5b6f23a8
