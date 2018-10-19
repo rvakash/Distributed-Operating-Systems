@@ -31,14 +31,12 @@ defmodule Proj3 do
         nodesListSorted = :lists.sort(nodesList)
         
         Enum.each nodesListSorted, fn nodeId ->
-            keys = codeSnippets.getKeys(previousId, nodeId, keysList)#getKeys between the node and its previous node
-            fingerTable = codeSnippets.getFingerTable(nodeId, nodesListSorted)
-            
+            keys = CodeSnippets.getKeys(previousId, nodeId, keysList)#getKeys between the node and its previous node
+            fingerTable = CodeSnippets.getFingerTable(nodeId, nodesListSorted, m)
+
         end
     end
     def intToString(integer) do
         integer |> Integer.to_string()
     end
 end
-nodeWithOverFlowinHex = :crypto.hash(:sha, Integer.to_string(nodeNum)) |> String.slice(0..m) |> Base.encode16
-
