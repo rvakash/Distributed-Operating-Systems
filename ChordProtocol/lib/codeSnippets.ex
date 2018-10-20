@@ -10,8 +10,8 @@ defmodule CodeSnippets do
     def successor(id, nodesListSorted) do
         # successor = Enum.each(nodesListSorted, )
     end
-end
-  def getKeys(prev,curr,keysList) do
-    Enum.filter(keysList, fn(x) -> x > prev and x <= curr end)
-  end
+
+    def getKeys(prev,curr,keysList) do
+        Enum.filter(keysList, fn(x) -> x > prev and x <= curr end)
+    end
 end

@@ -45,6 +45,14 @@ defmodule Proj3 do
             keys = CodeSnippets.getKeys(prevNodeId, nodeId, keysList)
         #   IO.inspect keys
             fingerTable = CodeSnippets.getFingerTable(nodeId, nodesListSorted, m)
+            successor = if i == numOfNodes-1 do
+                elem(List.pop_at(nodesListSorted, 0), 0)
+            else
+                elem(List.pop_at(nodesListSorted, i+1), 0)
+            end
+
+            
+        
         end
     end
 
