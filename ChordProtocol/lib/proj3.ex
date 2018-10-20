@@ -31,7 +31,7 @@ defmodule Proj3 do
             keyId = rem(keyWithOverFlowinInt, :math.pow(2,m) |> round)
             keyId
         end
-
+        IO.puts "Finished calculating nodesList and keyslist"
         nodesListSorted = :lists.sort(nodesList)
         range=0..numOfNodes-1
         for i <- range do
@@ -42,9 +42,14 @@ defmodule Proj3 do
             # {1, [2, 3]}
             nodeId = elem(List.pop_at(nodesListSorted, i), 0)
             prevNodeId = elem(List.pop_at(nodesListSorted, i-1), 0)
+            IO.puts "Calling getKeys"
             keys = CodeSnippets.getKeys(prevNodeId, nodeId, keysList)
+            IO.puts "Returned getKeys"
         #   IO.inspect keys
+            IO.puts "Calling fingertable"
             fingerTable = CodeSnippets.getFingerTable(nodeId, nodesListSorted, m)
+            IO.inspect fingerTable, label: "Returned fingerTable = "
+
             successor = if i == numOfNodes-1 do
                 elem(List.pop_at(nodesListSorted, 0), 0)
             else
