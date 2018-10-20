@@ -15,9 +15,9 @@ defmodule Proj3 do
         m = 31
 
         # Network initialization or the Chord ring is formed here
-        # Apply hash function, convert the hash to m bits and 
+        # Apply hash function, convert the hash to m bits and
         # then do a modulo 2^m to wrap around the ring
-        # Converting to m bits just so the identifier space is not too huge and 
+        # Converting to m bits just so the identifier space is not too huge and
         # the finger table is not too long. length(FT) = m
         nodesList = for nodeNum <- 1..numOfNodes do
             nodeWithOverFlowinHex = :crypto.hash(:sha, intToString(nodeNum)) |> String.slice(0..m) |> Base.encode16
@@ -52,7 +52,6 @@ defmodule Proj3 do
             end
 
             
-        
         end
     end
 
