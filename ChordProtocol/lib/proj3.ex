@@ -41,6 +41,7 @@ defmodule Proj3 do
             # iex> List.pop_at([1, 2, 3], 0)
             # {1, [2, 3]}
             nodeId = elem(List.pop_at(nodesListSorted, i), 0)
+            nodeId_atom = intToAtom(nodeId)
             prevNodeId = elem(List.pop_at(nodesListSorted, i-1), 0)
             IO.puts "Calling getKeys"
             keys = CodeSnippets.getKeys(prevNodeId, nodeId, keysList)
@@ -56,11 +57,15 @@ defmodule Proj3 do
                 elem(List.pop_at(nodesListSorted, i+1), 0)
             end
 
-            
+            GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId], name: nodeId_atom)
+
         end
     end
 
     def intToString(integer) do
         integer |> Integer.to_string()
+    end
+    def intToAtom(integer) do
+        integer |> Integer.to_string() |> String.to_atom()
     end
 end
