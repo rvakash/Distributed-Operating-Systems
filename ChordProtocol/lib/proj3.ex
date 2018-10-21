@@ -64,7 +64,7 @@ defmodule Proj3 do
         sumOfHopsCount=exitWorkers(numOfNodes,0)
         # Process.sleep(10000)
         # IO.puts "Came back in main"
-        averageHopsCount=sumOfHopsCount/numOfNodes
+        averageHopsCount = sumOfHopsCount/numOfNodes
         IO.puts "Finished Execution!"
         IO.puts "////////////////////////////////////////////////////////////"
         IO.puts "Average hops taken by each actor: #{averageHopsCount}"
@@ -80,11 +80,11 @@ defmodule Proj3 do
 
     def exitWorkers(0,sum1), do: sum1
 
-    def exitWorkers(numOfWorkers,sum) do
+    def exitWorkers(numOfWorkers, sum) do
         receive do
             hopsCount -> inspect(hopsCount)
-            sum1=sum+hopsCount
-            exitWorkers(numOfWorkers - 1,sum1)
+            sum1 = sum + hopsCount
+            exitWorkers(numOfWorkers - 1, sum1)
         end
     end
 end
