@@ -8,11 +8,8 @@ defmodule Actor do
 
     def handle_cast({:start_request, rumour}, state) do
         {nodeId, keys, fingerTable, successor, prevNodeId, numOfNodes, numOfRequests, m} = state
-        keyNum = :rand.uniform(numOfNodes)
-        keyWithOverFlowinHex = :crypto.hash(:sha, intToString(keyNum+100)) |> String.slice(0..m) |> Base.encode16
-        {keyWithOverFlowinInt, x} = Integer.parse(keyWithOverFlowinHex, 16)
-        keyId = rem(keyWithOverFlowinInt, :math.pow(2,m) |> round)
-        
+        keyId = generateRandomKey(numOfNodes, keys)
+                
         {:noreply, {nodeId, keys, fingerTable, successor, prevNodeId, numOfNodes, numOfRequests, m}}
     end
 
@@ -42,4 +39,16 @@ defmodule Actor do
         IO.inspect "Look! I'm dead."
     end
 
+    def generateRandomKey(numOfNodes, keys) do
+        keyNum = :rand.uniform(numOfNodes)
+        keyWithOverFlowinHex = :crypto.hash(:sha, intToString(keyNum+100)) |> String.slice(0..m) |> Base.encode16
+        {keyWithOverFlowinInt, x} = Integer.parse(keyWithOverFlowinHex, 16)
+        keyId = rem(keyWithOverFlowinInt, :math.pow(2,m) |> round)
+        # If the key it generated is present in the same node
+        if(List.first(Enum.find(keysList, fn(elem) -> elem == keyId end)) != nil) do
+            generateRandomKey(numOfNodes, keys)
+        else
+            keyId
+        end
+    end
 end
