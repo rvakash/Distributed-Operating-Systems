@@ -57,12 +57,8 @@ defmodule Proj3 do
                 elem(List.pop_at(nodesListSorted, i+1), 0)
             end
 
-<<<<<<< HEAD
             GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId, numOfNodes, numOfRequests, m], name: nodeId_atom)
 
-=======
-            GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId], name: nodeId_atom)
->>>>>>> 5c3d586d38dd372ed83378d4d45a5dd802b37f01
         end
         Enum.each(nodesListSorted, fn(actor) -> Genserver.cast(intToAtom(actor),:start_request) end)
         exitWorkers(numOfNodes)
