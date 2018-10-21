@@ -57,7 +57,7 @@ defmodule Proj3 do
                 elem(List.pop_at(nodesListSorted, i+1), 0)
             end
 
-            GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId, numOfNodes], name: nodeId_atom)
+            GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId, numOfNodes, numOfRequests, m], name: nodeId_atom)
 
         end
     end
