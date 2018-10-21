@@ -12,7 +12,7 @@ defmodule Proj3 do
         numOfRequests = String.to_integer(Enum.at(System.argv, 1))
         IO.inspect numOfNodes, label: "numOfNodes = "
         IO.inspect numOfRequests, label: "numOfRequests = "
-        m = 31
+        m = 32
 
         # Network initialization or the Chord ring is formed here
         # Apply hash function, convert the hash to m bits and
@@ -60,7 +60,7 @@ defmodule Proj3 do
             GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId, numOfNodes, numOfRequests, m], name: nodeId_atom)
 
         end
-        Enum.each(nodesListSorted, fn(actor) -> Genserver.cast(intToAtom(actor),:start_request) end)
+        Enum.each(nodesListSorted, fn(actor) -> GenServer.cast(intToAtom(actor), {:start_request}) end)
         sumOfHopsCount=exitWorkers(numOfNodes,0)
         # Process.sleep(10000)
         # IO.puts "Came back in main"
@@ -78,13 +78,13 @@ defmodule Proj3 do
         integer |> Integer.to_string() |> String.to_atom()
     end
 
-    def exitWorkers(0,sum1), do: sum1
+    def exitWorkers(0,sum), do: sum
 
-    def exitWorkers(numOfWorkers, sum) do
+    def exitWorkers(numOfWorkers, prevSum) do
         receive do
             hopsCount -> inspect(hopsCount)
-            sum1 = sum + hopsCount
-            exitWorkers(numOfWorkers - 1, sum1)
+            sum = prevSum + hopsCount
+            exitWorkers(numOfWorkers - 1, sum)
         end
     end
 end

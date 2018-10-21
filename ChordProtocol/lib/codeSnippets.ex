@@ -3,7 +3,7 @@ defmodule CodeSnippets do
     # def getFingerTable(nodeId, nodesListSorted, m) do
     #     numOfNodes = length(nodesListSorted)
     #     range = 1..m
-    #     fingerTable(nodeId, nodesListSorted, m, numOfNodes, [])
+    #     fingerTable(nodeId, nodesListSorted, m-1, numOfNodes-1, [])
     # end
 
     # def fingerTable(_, _, 0, _, fingerTableList) do
@@ -13,7 +13,7 @@ defmodule CodeSnippets do
     # def fingerTable(nodeId, nodesListSorted, m, numOfNodes, fingerTableList) do
     #     p2powi_minus1_overflow = nodeId + round(:math.pow(2,m))
     #     p2powi_minus1 = rem(p2powi_minus1_overflow, :math.pow(2,m) |> round)
-    #     {rowList, successor} = row(nodeId, nodesListSorted, m, p2powi_minus1, numOfNodes-1, [])
+    #     {rowList, successor} = row(nodeId, nodesListSorted, m, p2powi_minus1, numOfNodes, [])
     #     rowafter_removenil = Enum.find(rowList, fn(elem) -> elem != nil end)
     #     fingerTable(nodeId, nodesListSorted, m-1, successor, fingerTableList ++ [rowafter_removenil])
     # end
@@ -26,8 +26,7 @@ defmodule CodeSnippets do
     #     {rowList, successor}
     # end
 
-    # def row(nodeId, nodesListSorted, m, p2powi_minus1, start, rowList) do
-    #     x = start
+    # def row(nodeId, nodesListSorted, m, p2powi_minus1, x, rowList) do
     #     {rowListElement, successor} = if(p2powi_minus1 > elem(List.pop_at(nodesListSorted, -1), 0)) do
     #             IO.puts "inside if"
     #             {elem(List.pop_at(nodesListSorted, 0), 0), 0}
@@ -51,12 +50,14 @@ defmodule CodeSnippets do
         numOfNodes = length(nodesListSorted)
         range = 1..m
         fingerTable=for i <- range do
-            p2powi_minus1=nodeId + round(:math.pow(2,i-1))
+            # p2powi_minus1=nodeId + round(:math.pow(2,i-1))
+            p2powi_minus1_overflow = nodeId + round(:math.pow(2,i-1))
+            p2powi_minus1 = rem(p2powi_minus1_overflow, :math.pow(2,m) |> round)
             row = for x <- 0..numOfNodes-1 do
                 if(p2powi_minus1 > elem(List.pop_at(nodesListSorted, -1), 0)) do
                     elem(List.pop_at(nodesListSorted, 0), 0)
                 else
-                    if(p2powi_minus1 > elem(List.pop_at(nodesListSorted, x-1), 0) and p2powi_minus1 <= elem(List.pop_at(nodesListSorted, x), 0 ) ) do
+                    if(p2powi_minus1 >= elem(List.pop_at(nodesListSorted, x-1), 0) and p2powi_minus1 < elem(List.pop_at(nodesListSorted, x), 0 ) ) do
                         elem(List.pop_at(nodesListSorted, x), 0)
                     end
                 end
