@@ -61,7 +61,14 @@ defmodule Proj3 do
 
         end
         Enum.each(nodesListSorted, fn(actor) -> Genserver.cast(intToAtom(actor),:start_request) end)
-        exitWorkers(numOfNodes)
+        sumOfHopsCount=exitWorkers(numOfNodes,0)
+        # Process.sleep(10000)
+        # IO.puts "Came back in main"
+        averageHopsCount=sumOfHopsCount/numOfNodes
+        IO.puts "Finished Execution!"
+        IO.puts "////////////////////////////////////////////////////////////"
+        IO.puts "Average hops taken by each actor: #{averageHopsCount}"
+        IO.puts "////////////////////////////////////////////////////////////"
     end
 
     def intToString(integer) do
@@ -71,12 +78,13 @@ defmodule Proj3 do
         integer |> Integer.to_string() |> String.to_atom()
     end
 
-    def exitWorkers(0), do: nil
+    def exitWorkers(0,sum1), do: sum1
 
-    def exitWorkers(numOfNodes) do
+    def exitWorkers(numOfWorkers,sum) do
         receive do
-            exitValue -> inspect(exitValue)
-            exitWorkers(numOfNodes - 1)
+            hopsCount -> inspect(hopsCount)
+            sum1=sum+hopsCount
+            exitWorkers(numOfWorkers - 1,sum1)
         end
     end
 end
