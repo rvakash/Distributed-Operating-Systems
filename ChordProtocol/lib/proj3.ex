@@ -58,8 +58,9 @@ defmodule Proj3 do
             end
 
             GenServer.start_link(Actor, [nodeId, keys, fingerTable, successor, prevNodeId], name: nodeId_atom)
-
         end
+        Enum.each(nodesListSorted, fn(actor) -> Genserver.cast(intToAtom(actor),:start_request) end)
+        exitWorkers(numOfNodes)
     end
 
     def intToString(integer) do
@@ -67,5 +68,14 @@ defmodule Proj3 do
     end
     def intToAtom(integer) do
         integer |> Integer.to_string() |> String.to_atom()
+    end
+
+    def exitWorkers(0), do: nil
+
+    def exitWorkers(numOfNodes) do
+        receive do
+            exitValue -> inspect(exitValue)
+            exitWorkers(numOfNodes - 1)
+        end
     end
 end
