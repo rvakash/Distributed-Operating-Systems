@@ -5,6 +5,7 @@ defmodule Lookup do
             {1, hopCount}
         else
             successorID = find_successor(keyID, nodeId, successor, fingerTable)
+            IO.puts "#{nodeId} successor returned = #{successorID}"
             #2nd cast to successor Node with hopCount++    
             {0, successorID}
         end
@@ -12,13 +13,29 @@ defmodule Lookup do
     end
 
     def find_successor(keyID, nodeId, successor, fingerTable) do
-        if(nodeId<keyID and keyID<successor) do
-            successor
+        if successor < nodeId do
+            if nodeId < keyID or keyID < successor do
+                successor
+            else
+                # IO.puts "Inside find_successor else finding closest preceding node"
+                nextID = closest_preceding_node(keyID, nodeId, fingerTable, length(fingerTable)-1)
+                IO.inspect fingerTable, label: "node #{nodeId} for key = #{keyID} found cp node = #{nextID} fingerTable = "
+                # nextID.find_successor(keyID) #################Genserver call to the nextID ka lookup
+                nextID
+            end
         else
-            nextID = closest_preceding_node(keyID, nodeId, fingerTable, length(fingerTable)-1)
-            # nextID.find_successor(keyID) #################Genserver call to the nextID ka lookup
-            nextID
+            if(nodeId<keyID and keyID<successor) do
+                IO.puts "Inside find_successor if"
+                successor
+            else
+                # IO.puts "Inside find_successor else finding closest preceding node"
+                nextID = closest_preceding_node(keyID, nodeId, fingerTable, length(fingerTable)-1)
+                # IO.inspect fingerTable, label: "node #{nodeId} for key = #{keyID} found cp node = #{nextID} fingerTable = "
+                # nextID.find_successor(keyID) #################Genserver call to the nextID ka lookup
+                nextID
+            end
         end
+
     end
 
     def closest_preceding_node(_, nodeId, _, 0) do

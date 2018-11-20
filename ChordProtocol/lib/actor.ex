@@ -13,6 +13,8 @@ defmodule Actor do
         IO.puts "Starting requests"
         Enum.each(keyList, fn(key) -> 
             # lookup(keyID, sourceID,hopCount,fingerTable)
+            # IO.inspect key, "######################################Keys to search = "
+            IO.puts "################ #{nodeId} Requesting for key = #{key}"
             GenServer.cast(intToAtom(nodeId), {:message, key, nodeId, hopCount})
         end)
         {:noreply, {nodeId, keys, fingerTable, successor, predecessor, numOfNodes, numOfRequests, m, sum}}
@@ -21,7 +23,7 @@ defmodule Actor do
     def handle_cast({:message, key, sourceId, hopCount}, state) do
         {nodeId, keys, fingerTable, successor, predecessor, numOfNodes, numOfRequests, m, sum} = state
         # if foundkey then result is sourceID else result is successorID
-        IO.puts "node = #{nodeId} received message from source #{sourceId} with hopCount = #{hopCount}"
+        IO.puts "node = #{nodeId} received lookup(#{key}) from source #{sourceId} with hopCount = #{hopCount}"
         {foundKey, result} = Lookup.lookup(key, nodeId, sourceId, successor, hopCount, fingerTable, keys)
         if foundKey == 1 do
             GenServer.cast(intToAtom(sourceId), {:foundKey, result, hopCount + 1})
@@ -58,7 +60,7 @@ defmodule Actor do
     def generateRandomKeys(numOfNodes, keys, numOfRequests, m) do
         keysList = for i <- 1..numOfRequests do
             keyNum = :rand.uniform(numOfNodes)
-            keyWithOverFlowinHex = :crypto.hash(:sha, intToString(keyNum+100)) |> String.slice(0..m) |> Base.encode16
+            keyWithOverFlowinHex = :crypto.hash(:sha, intToString(keyNum)) |> String.slice(0..m) |> Base.encode16
             {keyWithOverFlowinInt, x} = Integer.parse(keyWithOverFlowinHex, 16)
             keyId = rem(keyWithOverFlowinInt, :math.pow(2,m) |> round)
             # If the key it generated is present in the same node

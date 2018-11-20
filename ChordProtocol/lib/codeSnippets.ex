@@ -28,7 +28,7 @@ def foundSuccessor(rowList, successor) do
 end
 
 def row(nodeId, nodesListSorted, m, p2powi_minus1, start) do
-    IO.puts "Entered here....."
+    # IO.puts "Entered here....."
     x = start
     {rowListElement, successor} =
        if(p2powi_minus1 > elem(List.pop_at(nodesListSorted, -1), 0)) do
@@ -37,9 +37,11 @@ def row(nodeId, nodesListSorted, m, p2powi_minus1, start) do
         else
             # IO.puts "inside else p2powi_minus1 = #{p2powi_minus1}, x-1 = #{elem(List.pop_at(nodesListSorted, x-1), 0)}, x = #{elem(List.pop_at(nodesListSorted, x), 0 )} "
             cond do
-              p2powi_minus1 < elem(List.pop_at(nodesListSorted, 0), 0) -> {elem(List.pop_at(nodesListSorted, 0), 0),0}
-              p2powi_minus1 >= elem(List.pop_at(nodesListSorted, x-1), 0) and p2powi_minus1 < elem(List.pop_at(nodesListSorted, x), 0 ) -> {elem(List.pop_at(nodesListSorted, x), 0),x}
-              true -> {nil,nil}
+            #   p2powi_minus1 < elem(List.pop_at(nodesListSorted, 0), 0) -> {elem(List.pop_at(nodesListSorted, 0), 0),0}
+            #   p2powi_minus1 >= elem(List.pop_at(nodesListSorted, x-1), 0) and p2powi_minus1 < elem(List.pop_at(nodesListSorted, x), 0 ) -> {elem(List.pop_at(nodesListSorted, x), 0),x}
+                p2powi_minus1 <= elem(List.pop_at(nodesListSorted, 0), 0) -> {elem(List.pop_at(nodesListSorted, 0), 0),0}
+                p2powi_minus1 > elem(List.pop_at(nodesListSorted, x-1), 0) and p2powi_minus1 <= elem(List.pop_at(nodesListSorted, x), 0 ) -> {elem(List.pop_at(nodesListSorted, x), 0),x}
+            true -> {nil,nil}
             end
 
         end
@@ -77,7 +79,31 @@ end
     #     end
     # end
 
-    def getKeys(prev,curr,keysList) do
-        Enum.filter(keysList, fn(x) -> x > prev and x <= curr end)
+    def getKeys(prev, curr, keysList, lastNode, firstNode ) do
+        # The wrong is here because 0..1st range keys cannot be greated than last node. x>prev will fail
+        # keys = Enum.filter(keysList, fn(x) -> x > prev and x <= curr end)
+        # IO.inspect keys, label: "curr = #{curr}, prev = #{prev}, keys = "
+        keysFinalList=cond do
+            curr == lastNode -> for i <- 0..length(keysList)-1 do
+              if elem(List.pop_at(keysList, i), 0) <= curr and elem(List.pop_at(keysList, i), 0) >prev do
+                elem(List.pop_at(keysList, i), 0)
+              end
+            end
+            curr == firstNode -> for i <- 0..length(keysList)-1 do
+              cond do
+                elem(List.pop_at(keysList, i), 0) <= curr -> elem(List.pop_at(keysList, i), 0)
+                elem(List.pop_at(keysList, i), 0) > prev -> elem(List.pop_at(keysList, i), 0)
+                true -> nil
+              end
+            end
+            true -> for i <- 0..length(keysList)-1 do
+              if elem(List.pop_at(keysList, i), 0) <= curr and elem(List.pop_at(keysList, i), 0) >prev do
+                elem(List.pop_at(keysList, i), 0)
+              end
+            end
+          end
+          finalList=Enum.filter(keysFinalList, fn(x) -> x != nil end)    
+          IO.inspect finalList, label: "curr = #{curr}, prev = #{prev}, keys = "
+          finalList
     end
 end
